@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <button id="btn1">点击获取数据</button>
+    <button id="btn2">点击获取数据（代理）</button>
+    
+    <script>
+        const oBtn1 = document.querySelector('#btn1');
+        const oBtn2 = document.querySelector('#btn2');
+
+        const handleClick = (path) => () => {
+            fetch(path, { method: 'GET' }).then(res => res.json()).then(data => data.code === 200 && alert(data.msg)).catch(e => alert(e.message));
+        }
+
+        oBtn1.addEventListener('click', handleClick('http://localhost:8080/getJson'));
+        oBtn2.addEventListener('click', handleClick('/lyx/getJson'));
+    </script>
+
+</body>
+</html>

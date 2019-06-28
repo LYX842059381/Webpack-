@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            width: 1280px;
+            min-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+
+        ul {
+            padding: 0;
+            margin: 20px 0 0 0;
+            list-style: none;
+        }
+
+        .movie-item {
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .banner {
+            margin-right: 40px;
+            width: 300px;
+        }
+        .banner>img {
+            width: 100%;
+            display: block;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .title {
+            font-size: 36px;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .pic {
+            margin-bottom: 10px;
+            height: 100px;
+        }
+
+        .pic>img {
+            display: block;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .explain {
+            font-style: italic;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .download {
+            color: #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .pic-modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .pic-modal-img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <button class="btn">获取今日推荐电影</button>
+    </div>
+
+    <ul></ul>
+
+    <div class="pic-modal" style="display: none;">
+        <img class="pic-modal-img" src="">
+    </div>
+
+    <script>
+        const oBtn = document.querySelector('.btn');
+        const oUl = document.querySelector('ul');
+        const oModal = document.querySelector('.pic-modal');
+        const oModalImg = document.querySelector('.pic-modal>img');
+        const render = (data) => {
+            const oUl = document.querySelector('ul');
+            let template = data.map(item => `
+                <li class="movie-item">
+                    <div class="row">
+                        <div class="banner">
+                            <img src="${ item.pics[0] }" />
+                        </div>
+                        <div class="content">
+                            <p class="title">${ item.title }</p>
+                            <p class="explain">内容简介:${ item.explain }</p>
+                            <div class="pic">
+                                <img
+                                    src="${ item.pics[1] }"
+                                    data-src="${ item.pics[1] }"
+                                />
+                                <br>(点击查看缩略图)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <a class="download" href="${ item.url }">下载地址:${ item.url }</a>
+                </li>
+            `);
+
+            oUl.innerHTML = template.join('');
+        }
+        
+        oBtn.addEventListener('click', () => {
+            fetch('/api/getMovies', { method: 'GET' }).then(res => res.json()).then(data => render(data.data)).catch(e => alert(e))
+        });
+        oUl.addEventListener('click', (e) => {
+            if (e.target.nodeName !== 'IMG') return;
+            oModal.style.display = 'block';
+            oModalImg.src = e.target.dataset['src'];
+        });
+        oModal.addEventListener('click', () => {
+            oModal.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
